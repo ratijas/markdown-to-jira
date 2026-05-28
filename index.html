@@ -4,12 +4,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#171717">
-        <link rel="icon" type="image/svg+xml" href="favicon.svg">
-        <link rel="stylesheet" href="style.css">
-        <link rel="manifest" href="manifest.json">
+        <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+        <link rel="stylesheet" href="src/style.css">
+        <link rel="manifest" href="./manifest.json">
         <title>Markdown to Jira</title>
-        <link rel="stylesheet" href="./github-dark.min.css">
-        <script src="index.ts" defer></script>
+        <link rel="stylesheet" href="src/github-dark.min.css">
     </head>
     <body>
         <a href="tests" title="View E2E test results" style="position:fixed;bottom:12px;right:12px;z-index:9999;color:#8b949e;text-decoration:none;font-size:12px;display:flex;align-items:center;gap:4px;background:#222;border:1px solid #333;border-radius:6px;padding:6px 10px;opacity:0.7;transition:opacity .2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
@@ -52,5 +51,6 @@
                 <textarea id="output" placeholder="Jira output appears here…" readonly></textarea>
             </section>
         </main>
+        <script type="module" src="src/index.ts"></script>
     </body>
 </html>

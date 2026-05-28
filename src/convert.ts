@@ -317,7 +317,7 @@ export function correctMarkdown(markdown: string): string {
 
 export function convert(markdown: string, correct = false): string {
 	const source = correct ? correctMarkdown(markdown) : markdown;
-	const result = <string>marked(source, {
+	const result = marked(source, {
 		renderer: new JiraRenderer(),
 		async: false,
 		gfm: true,
