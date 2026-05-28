@@ -1,56 +1,9 @@
 import { convert, correctMarkdown, html } from "./convert";
 
-declare const document: {
-	getElementById(id: string): {
-		value: string;
-		innerHTML: string;
-		innerText: string;
-		style: { display: string };
-		addEventListener(event: string, fn: (e?: any) => void): void;
-		classList: {
-			toggle(name: string, force?: boolean): boolean;
-			contains(name: string): boolean;
-			add(name: string): void;
-			remove(name: string): void;
-		};
-		getAttribute(name: string): string | null;
-		closest(selector: string): any;
-		textContent: string;
-		title: string;
-		parentNode: { insertBefore(newNode: any, refNode: any): void };
-		nextSibling: any;
-		remove(): void;
-	};
-	querySelectorAll(selector: string): Array<{
-		addEventListener(event: string, fn: (e?: unknown) => void): void;
-		getAttribute(name: string): string | null;
-		innerHTML: string;
-		remove(): void;
-	}>;
-	createElement(tag: string): {
-		className: string;
-		textContent: string;
-		classList: { add(name: string): void; remove(name: string): void };
-		remove(): void;
-		addEventListener(event: string, fn: (e?: unknown) => void): void;
-		setAttribute(name: string, value: string): void;
-		title: string;
-	};
-	body: { appendChild(el: unknown): void };
-	addEventListener(event: string, fn: (e?: unknown) => void): void;
-};
-declare const window: {
-	convert?: (markdown: string) => string;
-	navigator: { clipboard: { writeText(text: string): Promise<void> } };
-};
-declare const localStorage: {
-	getItem(key: string): string | null;
-	setItem(key: string, value: string): void;
-};
-const input = document.getElementById("input");
-const output = document.getElementById("output");
-const preview = document.getElementById("preview");
-const correctBtn = document.getElementById("btn-correct");
+const input = document.getElementById("input") as HTMLTextAreaElement;
+const output = document.getElementById("output") as HTMLTextAreaElement;
+const preview = document.getElementById("preview")!;
+const correctBtn = document.getElementById("btn-correct")!;
 
 let errorCorrectionEnabled = localStorage.getItem("errorCorrection") === "true";
 
@@ -83,7 +36,6 @@ correctBtn.addEventListener("click", () => {
 });
 
 updateCorrectBtnState();
-window.convert = convert;
 
 const ICON_MAXIMIZE =
 	'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>';
@@ -95,23 +47,23 @@ const ICON_CHECK =
 	'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 
 // ── Fullscreen toggle ──
-document.querySelectorAll(".btn-fullscreen").forEach((btn: any) => {
+document.querySelectorAll(".btn-fullscreen").forEach((btn) => {
 	btn.addEventListener("click", () => {
 		const targetId = btn.getAttribute("data-target");
 		if (!targetId) return;
-		const panel = document.getElementById(targetId);
+		const panel = document.getElementById(targetId)!;
 		const isFullscreen = panel.classList.toggle("fullscreen");
 		btn.innerHTML = isFullscreen ? ICON_MINIMIZE : ICON_MAXIMIZE;
 	});
 });
 
 // ── Escape to exit fullscreen ──
-document.addEventListener("keydown", (e: any) => {
+document.addEventListener("keydown", (e) => {
 	if (e.key === "Escape") {
-		document.querySelectorAll(".panel").forEach((panel: any) => {
+		document.querySelectorAll(".panel").forEach((panel) => {
 			panel.classList.remove("fullscreen");
 		});
-		document.querySelectorAll(".btn-fullscreen").forEach((btn: any) => {
+		document.querySelectorAll(".btn-fullscreen").forEach((btn) => {
 			btn.innerHTML = ICON_MAXIMIZE;
 		});
 	}
@@ -132,16 +84,13 @@ function showToast(message: string) {
 	}, 1500);
 }
 
-declare function requestAnimationFrame(fn: () => void): void;
-declare function setTimeout(fn: () => void, ms: number): void;
-
 const sources: Record<string, { value?: string; innerText?: string }> = {
 	input,
 	output,
 	preview,
 };
 
-document.querySelectorAll(".btn-copy").forEach((btn: any) => {
+document.querySelectorAll(".btn-copy").forEach((btn) => {
 	btn.addEventListener("click", () => {
 		const sourceId = btn.getAttribute("data-source");
 		if (!sourceId) return;
@@ -174,7 +123,7 @@ const SECTION_LABELS: Record<string, string> = {
 	display_section: "Preview",
 	output_section: "Jira Output",
 };
-const PANELS_CONTAINER = document.getElementById("panels");
+const PANELS_CONTAINER = document.getElementById("panels")!;
 
 function getHiddenSections(): string[] {
 	try {
@@ -192,18 +141,18 @@ function saveHiddenSections(hidden: string[]) {
 function updateGridColumns() {
 	const parts: string[] = [];
 	for (const id of SECTION_IDS) {
-		const panel = document.getElementById(id);
+		const panel = document.getElementById(id)!;
 		if (panel.classList.contains("hidden")) {
 			parts.push("auto");
 		} else {
 			parts.push("1fr");
 		}
 	}
-	(PANELS_CONTAINER as any).style.gridTemplateColumns = parts.join(" ");
+	PANELS_CONTAINER.style.gridTemplateColumns = parts.join(" ");
 }
 
 function hideSection(sectionId: string) {
-	const panel = document.getElementById(sectionId);
+	const panel = document.getElementById(sectionId)!;
 	if (panel.classList.contains("hidden")) return;
 	panel.classList.add("hidden");
 
@@ -214,7 +163,7 @@ function hideSection(sectionId: string) {
 	bar.title = `Show ${SECTION_LABELS[sectionId] ?? sectionId}`;
 	bar.setAttribute("data-restore", sectionId);
 	bar.addEventListener("click", () => showSection(sectionId));
-	panel.parentNode.insertBefore(bar, panel.nextSibling);
+	panel.parentNode!.insertBefore(bar, panel.nextSibling);
 
 	const hidden = getHiddenSections();
 	if (!hidden.includes(sectionId)) {
@@ -225,13 +174,13 @@ function hideSection(sectionId: string) {
 }
 
 function showSection(sectionId: string) {
-	const panel = document.getElementById(sectionId);
+	const panel = document.getElementById(sectionId)!;
 	panel.classList.remove("hidden");
 
 	// Remove the restore bar
 	document
 		.querySelectorAll(`[data-restore="${sectionId}"]`)
-		.forEach((el: any) => {
+		.forEach((el) => {
 			el.remove();
 		});
 
@@ -241,7 +190,7 @@ function showSection(sectionId: string) {
 }
 
 // Wire up hide buttons
-document.querySelectorAll(".btn-hide").forEach((btn: any) => {
+document.querySelectorAll(".btn-hide").forEach((btn) => {
 	btn.addEventListener("click", () => {
 		const targetId = btn.getAttribute("data-target");
 		if (!targetId) return;
@@ -256,9 +205,6 @@ for (const id of initialHidden) {
 }
 
 // ── Register service worker ──
-declare const navigator: {
-	serviceWorker?: { register(url: string): Promise<any> };
-};
 if (navigator.serviceWorker) {
 	navigator.serviceWorker.register("sw.js");
 }
