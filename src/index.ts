@@ -203,8 +203,3 @@ const initialHidden = getHiddenSections();
 for (const id of initialHidden) {
 	hideSection(id);
 }
-
-// ── Register service worker ──
-if (navigator.serviceWorker) {
-	navigator.serviceWorker.register("sw.js");
-}

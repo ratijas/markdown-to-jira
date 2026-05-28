@@ -32,7 +32,6 @@ markdown-to-jira/
 │   ├── index.ts              # Browser entry point (wires up textarea I/O)
 │   ├── index.html            # Single-page app shell
 │   ├── style.css             # Dark-theme three-column layout
-│   ├── sw.ts                 # Service worker for offline support
 │   ├── manifest.json         # PWA web app manifest
 │   ├── icon-192.svg          # PWA icon (192×192)
 │   └── icon-512.svg          # PWA icon (512×512)
