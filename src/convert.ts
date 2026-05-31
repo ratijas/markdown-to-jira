@@ -124,7 +124,10 @@ export class JiraRenderer extends Renderer {
 			.replaceAll("}", "\\}")
 			.replaceAll("[", "\\[")
 			.replaceAll("]", "\\]")
-			.replaceAll("|", "\\|");
+			.replaceAll("|", "\\|")
+			.replaceAll("-", "\\-")
+			.replaceAll("*", "\\*")
+			.replaceAll("_", "\\_");
 		// Jira only recognises \ as escape before { } [ ] |
 		// A trailing \ would escape the first } of }}, breaking monospace.
 		// Insert a zero-width space to separate them.
